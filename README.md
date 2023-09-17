@@ -13,3 +13,6 @@ steps to run this project
 5 - create super user 
 
 create account , add income and expense
+
+
+note : some bugs are exists
