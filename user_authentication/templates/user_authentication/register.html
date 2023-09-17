@@ -1,0 +1,62 @@
+{% extends 'user_authentication/base.html' %}
+
+
+
+{% block title %}
+    Register
+{% endblock title %}
+
+
+{% block content %}
+    <div class="card-header">
+    <h4 class="text-info">Manage Your Monthly Expenses </h4>
+
+    </div>
+    <div class="card">
+       <div class="card-body">
+        <div class="card-title text-center">
+            <h3>Create a free account</h3>
+            <div id="success-msg"></div>
+           </div>
+           <hr class="divider">
+        <form action="" id="register-form">
+            <div class="form-group">
+                <span>username</span>
+                <input type="text" name="username" id="username" placeholder="enter username" class="form-control" onfocusout="validateUsername()">
+                <div><span id="username-error" class="text-danger"></span></div>
+            </div><br>
+            <div class="form-group">
+                <span>Email</span>
+                <input type="email" name="email" id="email" placeholder="enter email" class="form-control" onfocusout="validateEmail()">
+                <div><span id="email_error" class="text-danger"></span></div>
+            </div><br>
+            <div class="form-group">
+                <span>password</span>
+                <input type="password" name="password" id="password" placeholder="enter password" class="form-control">
+                <div><span id="password_error" class="text-danger"></span></div>
+                <div class="float-end"><small class="showHidePassword" id="toggleShowHidePassword" onclick="toggleShowHidePassword()">show</small></div>
+
+            </div><br>
+            <div class="form-group"></div>
+                <span>repeat password</span>
+                <input type="password" name="r_password" id="r_password" placeholder="repeat your password" class="form-control" onkeyup="checkPasswords()">
+                <div><span id="r_password_error" class="text-danger"></span></div>
+                <div class="float-end"><small class="showHidePassword" id="toggleShowRepeatHidePassword" class="toggle"  onclick="toggleShowHideRePassword()">show</small></div>
+                
+            </div><br>
+            
+        </form>
+        <div class="form-group mb-3" style="margin-left: 10px;">
+
+            <button class="btn btn-primary btn-sm" id="register-btn" type="button" disabled onclick="createUser()">
+                <span id="register-span" class="spinner-border spinner-border-sm displayNone" role="status"></span>
+                 
+                Register
+              </button>
+            <a href="{% url 'login' %}" class="btn btn-sm btn-success">already have an account ? </a>
+
+        </div>
+       </div>
+    </div>
+{% endblock content %}
+    

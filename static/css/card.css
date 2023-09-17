@@ -1,0 +1,10 @@
+ 
+.card-header{
+    margin-top: 50px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+}
+.card .card-header{
+    background-color: rgb(114, 85, 168);
+    color:white;
+}

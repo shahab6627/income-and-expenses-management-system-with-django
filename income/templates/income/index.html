@@ -1,0 +1,220 @@
+{% extends 'expenses/base.html' %}
+{% load static %}
+
+
+{% block title %}
+    
+{% endblock title %}
+{% block content %}
+<!-- add expense Modal -->
+
+<div class="modal fade" id="add_income" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="add_expense" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="add_income">Add New Income</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="group-form">
+            <input type="hidden" name="income_id" id="income_id" >
+
+            <span>income</span>
+            <input type="text" name="income" id="income" placeholder="income name" class="form-control">
+          </div>
+          <br>
+          <div class="group-form">
+            <span>income amount</span>
+            <input type="number" name="amount" id="amount" placeholder="amount" class="form-control">
+          </div>
+          <br>
+          <div class="group-form">
+            <span>description</span>
+            <textarea type="text" name="description" id="description" placeholder="add description" cols="10" rows="5" class="form-control">
+            </textarea>
+          </div>
+          <br>
+          <div class="group-form">
+            <span>income source</span>
+            <div class="mb-3">
+              <select class="form-select" id="income_source" name="income_source" required aria-label="select example">
+                <option value="">--select--</option>
+                {% for income_source in income_sources %}
+                <option value="{{income_source.source}}">{{income_source.source}}</option>
+                  
+                {% endfor %}
+              </select>
+            </div>
+            </div>
+          <br>
+          <div class="group-form">
+            <span>Date</span>
+            <input type="date" name="date" id="date" class="form-control">
+          </div>
+          <br>
+        
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">save expense</button>
+          </div>
+        </form>
+      </div>
+     
+    </div>
+  </div>
+</div>
+{% comment %} end of modal  {% endcomment %}
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+      <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#add_income">add income +</button>
+      
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">
+          <svg class="bi"><use xlink:href="#calendar3"/></svg>
+          This week
+        </button>
+      </div>
+    </div>
+
+    {% comment %} <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> {% endcomment %}
+    
+    {% if messages %}
+      
+      {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+      {% endfor %}
+        
+    {% endif %}
+      
+    {% if incomes %}
+    <span class="float-end">My Total Income : <span id="total-amount"> {% if user_currency != "None" %}
+        ({{user_currency.currency_type}})
+        {% else %}
+        <a href="{% url 'change-currency'%}">change currency</a>
+    {% endif %} :  {{total_income}}</span></span>
+    <h5>All Incomes</h5>
+   
+
+    <div class="table-responsive small mt-3">
+      <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+          <form action="">
+            {% csrf_token %}
+          <div class="input-group">
+            <input type="text" class="form-control" id="searchExp" name="search"
+             placeholder="search here" onkeyup="searchExpense()">
+          </div>
+        </form>
+        </div>
+      </div>
+      <hr>
+      <div id="expense-table">
+      <table class="table table-striped table-sm expense-table mt-2" >
+
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">income from</th>
+            <th scope="col">amount 
+            {% if user_currency != "None" %}
+                ({{user_currency.currency_type}})
+                {% else %}
+                (<a href="{% url 'change-currency'%}">change currency</a>)
+            {% endif %}
+                </th>
+            <th scope="col">description</th>
+            <th scope="col">income source</th>
+            <th scope="col">date</th>
+            <th>actions</th>
+
+          </tr>
+        </thead>
+        <tbody>
+            {% for income in incomes %}
+            <tr id="tr-{{expense.id}}">
+              <td>{{forloop.counter}}</td>
+              <td>{{income.income_from}}</td>
+              <td>{{income.amount}}</td>
+              <td>{{income.description}}</td>
+              <td>{{income.income_source}} </td>
+              <td>{{income.date}} </td>
+              <td class="mt-1">
+                <button class="btn btn-sm btn-primary edit-income"
+               
+                data-income="{{income.income_from}}"
+                data-amount="{{income.amount}}"
+                data-description="{{income.description}}"
+                data-income-source="{{income.income_source}}"
+                data-income-id = "{{income.id}}"
+                data-date="{{income.date}}"
+                data-bs-toggle="modal" data-bs-target="#add_income"> <i class="bi bi-pencil-square"></i></button> 
+                <button 
+                
+                class="btn btn-sm btn-danger delete-income" 
+                data-expense-id="{{income.id}}"
+                ><i class="bi bi-archive"></i>
+                </button></td>
+                                                      <!-- this function is defined in main.js  -->
+            </tr>
+            {% endfor %}
+          
+        </tbody>
+      </table>
+      <div class="pagination mb-3">
+        <span class="step-links">
+            {% if user_expenses.has_previous %}
+                <a class="btn btn-sm btn-primary" href="?page=1">&laquo; first</a>
+                <a class="btn btn-sm btn-success" href="?page={{ user_expenses.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ user_expenses.number }} of {{ user_expenses.paginator.num_pages }}. 
+            </span>
+    
+            {% if user_expenses.has_next %}
+                <a class="btn btn-sm btn-primary" href="?page={{ user_expenses.next_page_number }}">next</a>
+                <a class="btn btn-sm btn-success" href="?page={{ user_expenses.paginator.num_pages }}">last &raquo;</a>
+                  
+                    
+                {% endif %}
+        </span>
+    </div>
+  </div>
+  <div id="search-result" class="displayNone">
+    <table class="table table-striped table-sm expense-table mt-2" >
+
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">expense</th>
+          <th scope="col">amount</th>
+          <th scope="col">description</th>
+          <th scope="col">date</th>
+
+        </tr>
+      </thead>
+     
+        <tbody id="search-table-body">
+      
+      </tbody>
+    </table>
+  </div>
+      {% else %}
+            <tr> <h4>you don,t have any income right now..!</h4></tr>
+      {% endif %}
+
+    </div>
+  </main>
+{% endblock content %}
+    
+    

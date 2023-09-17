@@ -1,0 +1,55 @@
+{% extends 'user_authentication/base.html' %}
+
+
+
+{% block title %}
+    Login
+{% endblock title %}
+
+
+{% block content %}
+<div class="card-header">
+    <h4 class="text-info">Manage Your Monthly Expenses </h4>
+    
+    {% if messages %}
+        
+        {% for message in messages %}
+         <div class="alert alert-success text-white">{{message}}</div>
+        {% endfor %}
+            
+    {% endif %}
+        
+    </div>
+    <div class="card">
+       <div class="card-body">
+        <div class="card-title">
+            <h3>login to your profile</h3>
+            <div class="alert alert-danger displayNone" id="login-alert">username or password incorrect!</div>
+        <form action="">
+
+            <div class="form-group">
+                <input type="text" name="username" id="username" class="form-control" placeholder="enter username" onkeyup="removeUsernameError()">
+                <div><span id="username_error" class="text-danger"></span></div>
+                
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="password" name="password" id="password" placeholder="enter password" class="form-control" onkeyup="removePasswordError()">
+                <div><small class="float-end showHidePassword" id="showhidePassword" onclick="toggleShowHideLoginPassword()">show</small></div>
+                <div><span id="password_error" class="text-danger"></span></div>
+                
+            </div>
+            <br>
+        </form>
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-sm btn-primary" onclick="loginUser()">
+            <a href="{% url 'register' %}" class="btn btn-sm btn-success">Register</a>&nbsp
+            <a href="{% url 'resetpassword' %}" class=" btn-sm btn-success">reset password.?</a>
+
+
+        </div>
+       </div>
+    </div>
+    </div>
+{% endblock content %}
+    
